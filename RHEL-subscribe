@@ -1,0 +1,13 @@
+#/bin/bash
+subscription-manager register --username=username --password=password
+echo "Enter the username"
+read $username
+echo "Enter the password"
+read $password
+sleep 10
+subscription-manager attach --auto
+sleep 10
+echo "Do you want to attach the subcription-manager to this system..?"
+read $
+subscription-manager list --installed  
+echo "The system is registered with RedHat subscription-manager" 
