@@ -1,0 +1,80 @@
+Apache Tomcat installation and config
+
+dnf install -y java-17-openjdk-devel
+java -version
+cd /usr/local
+wget https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.107/bin/apache-tomcat-9.0.107.tar.gz
+ls -la
+tar -xvf apache-tomcat-9.0.96.tar.gz
+mv apache-tomcat-9.0.96 tomcat9
+rm -rf apache-tomcat-9.0.96.tar.gz
+pwd tomcat9/
+ls -l tomcat9/
+useradd -r tomcat
+chown -R tomcat:tomcat /usr/local/tomcat9
+chmod -R 755 tomcat9
+ls -l /usr/local/tomcat9
+vi /etc/systemd/system/tomcat.service
+[Unit]
+Description=Apache Tomcat Server
+After=syslog.target network.target
+ 
+[Service]
+Type=forking
+User=tomcat
+Group=tomcat
+ 
+Environment=CATALINA_PID=/usr/local/tomcat9/temp/tomcat.pid
+Environment=CATALINA_HOME=/usr/local/tomcat9
+Environment=CATALINA_BASE=/usr/local/tomcat9
+ 
+ExecStart=/usr/local/tomcat9/bin/catalina.sh start
+ExecStop=/usr/local/tomcat9/bin/catalina.sh stop
+ 
+RestartSec=10
+Restart=always
+[Install]
+WantedBy=multi-user.target
+Wq!
+systemctl daemon-reload
+systemctl enable --now tomcat.service
+systemctl status tomcat.service
+netstat -tlpn
+firewall-cmd --zone=public --permanent --add-port=8080/tcp;
+firewall-cmd --zone=public --permanent --add-port=8443/tcp;
+firewall-cmd --reload
+systemctl stop tomcat.service
+vi /usr/local/tomcat9/conf/tomcat-users.xml <-- paste the below in last 2nd line (Line 56 -- 61)
+<role rolename="tomcat"/>
+<role rolename="manager-gui"/>
+<role rolename="manager-script"/>
+<user username="tomcat" password="1234567890@Abc" roles="tomcat"/>
+<user username="manager" password="1234567890@Abc" roles="tomcat,manager-gui"/>
+<user username="jenkins" password="1234567890@Abc" roles="tomcat,manager-gui,manager-script"/>
+wq!
+vi /usr/local/tomcat9/webapps/manager/META-INF/context.xml
+allow="^.*$" <-- Line 22 replace 
+wq!
+
+
+
+######################## Hosting ISO files on Tomact server ###########################
+#/usr/local/tomcat9/conf/server.xml
+#docBase="/usr/local/tomcat9/webapps/ISOs" path="/ISOs"
+#wq!
+
+######################## Hosting ISO files on httpd server ###########################
+dnf install httpd -y
+systemctl enable --now httpd
+systemctl status httpd
+systemctl start httpd
+systemctl stop httpd
+firewall-cmd --zone=public --permanent --add-service=http;
+firewall-cmd --zone=public --permanent --add-service=https;
+firewall-cmd --zone=public --permanent --add-port=8081/tcp;
+firewall-cmd --zone=public --permanent --add-port=8082/tcp;
+firewall-cmd --zone=public --permanent --add-port=8443/tcp;
+firewall-cmd --reload
+
+######################## persistent mount of additional disks/volumes ###########################
+sed -i -e '$aUUID=14bddee2-3433-4a4e-8348-880a800f1058 /var/www/html/repos ext4 defaults        0 0' /etc/fstab

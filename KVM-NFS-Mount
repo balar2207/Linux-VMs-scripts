@@ -1,0 +1,29 @@
+mkdir /mnt/nfs_share
+mount -t nfs AMD7950x:/NFS-Share /mnt/nfs_share &
+sleep 10
+sudo sh -c 'echo "AMD7950x:/NFS-Share /mnt/nfs_share nfs defaults 0 0" >> /etc/fstab'
+sleep 2
+systemctl daemon-reload
+mount -a
+echo "The NFS Share is mounted $(df -h | grep -i nfs)"
+echo "Changing the SElinux settings for NFS $(setsebool -P virt_use_nfs on)"
+echo "Mounting the NFS_pool source and destination targets $(virsh pool-define-as nfs_pool netfs --source-host AMD7950x --source-path /NFS-Share  --target /mnt/nfs_share)"
+echo "$(sleep 10)"
+echo "starting the nfs_pool $(virsh pool-start nfs_pool)"
+echo "enabling the nfs_pool for autostart $(virsh pool-autostart nfs_pool)"
+#
+#
+#curl -S https://raw.githubusercontent.com/balar2207/Linux-VMs-scripts/refs/heads/main/KVM-NFS-Mount | bash
+
+
+
+###################### In case of manual, copy/paste the below commands###############################
+#mkdir /mnt/nfs_share;
+#mount -t nfs AMD7950x:/NFS-Share /mnt/nfs_share;
+#sleep 10;
+#echo "AMD7950x:/NFS-Share /mnt/nfs_share nfs defaults 0 0" | sudo tee -a /etc/fstab;
+#setsebool -P virt_use_nfs on;
+#virsh pool-define-as nfs_pool netfs --source-host AMD7950x --source-path /NFS-Share  --target /mnt/nfs_share;
+#sleep 10;
+#virsh pool-start nfs_pool;
+#virsh pool-autostart nfs_pool
