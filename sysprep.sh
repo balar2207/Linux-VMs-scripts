@@ -10,3 +10,4 @@ echo "yum makecache is completed"
 echo "The sysprep is completed, This Machine is shutting down right now"
 bash -c "sleep 2; shutdown -h now"&
 rm ~/.bash_history
+#curl -O https://raw.githubusercontent.com/balar2207/Linux-VMs-scripts/refs/heads/main/sysprep.sh
