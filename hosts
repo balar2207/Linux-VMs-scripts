@@ -41,6 +41,7 @@
 192.168.1.49 chef-windows2022-node1
 192.168.1.50 Rocky95
 192.168.1.50 Rocky96
+192.168.1.50 Rocky10
 192.168.1.50 Oracle-Linux-9
 192.168.1.51 DevOps-Jump
 192.168.1.51 DevOps-Class
