@@ -43,8 +43,7 @@
 192.168.1.50 Rocky96
 192.168.1.50 Rocky10
 192.168.1.50 Oracle-Linux-9
-192.168.1.51 DevOps-Jump
-192.168.1.51 DevOps-Class
+192.168.1.51 DevOps-Docker-VM
 192.168.1.52 Sonar-Nexus-VM
 192.168.1.53 Jenkins-Master-VM
 192.168.1.54 Jenkins-Linux-Agent1
